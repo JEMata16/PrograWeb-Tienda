@@ -2,48 +2,49 @@ package com.tienda_v1.controller;
 
 import com.tienda_v1.domain.Cliente;
 import com.tienda_v1.service.ClienteService;
-import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 
 @Controller
+@RequestMapping("/cliente")
 public class ClienteController {
     
     @Autowired
     private ClienteService clienteService;
     
-    
-    @GetMapping("/")
+    @GetMapping("/listado")
     public String inicio(Model model){ 
-        var clientes = clienteService.getClientes();
+        var clientes=clienteService.getClientes();
         model.addAttribute("clientes",clientes);
-        return "index";
+        return "/cliente/listado";
     }
     
-    @GetMapping("/cliente/eliminar/{idCliente}")
+    @GetMapping("/eliminar/{idCliente}")
     public String eliminaCliente(Cliente cliente){
         clienteService.deleteCliente(cliente);
-        return "redirect:/";
+        return "redirect:/cliente/listado";
     }
     
-    @GetMapping("/cliente/nuevo")
+    @GetMapping("/nuevo")
     public String nuevoCliente(Cliente cliente){
-        return "modificaCliente";
+        return "/cliente/modifica";
     }
     
-    @PostMapping("/cliente/guardar")
+    @PostMapping("/guardar")
     public String guardarCliente(Cliente cliente){
         clienteService.saveCliente(cliente);
         return "redirect:/";
     }
     
-    @GetMapping("/cliente/modificar/{idCliente}")
+    @GetMapping("/modificar/{idCliente}")
     public String modificaCliente(Cliente cliente, Model model){
         cliente = clienteService.getCliente(cliente);
         model.addAttribute("cliente",cliente);
-        return "modificaCliente";
+        return "/cliente/modifica";
     }
 }
