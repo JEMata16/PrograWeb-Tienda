@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://wwww.thymeleaf.org"
-      mlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+      xmlns:th="http://wwww.thymeleaf.org">
     <head th:replace="~{layout/plantilla :: head}">
         <title>TechShop</title>
         <meta charset="UTF-8"/>
@@ -14,7 +13,8 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-header bg-success">
-                            <h2>Login</h2></div>
+                            <h2>[[#{login.login}]]</h2>
+                        </div>
                         <div class="card-body">
                             <form method="POST" th:action="@{/login}">
                                 <div class="form-group row my-3">

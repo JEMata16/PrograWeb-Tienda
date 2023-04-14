@@ -29,36 +29,38 @@ public class SecurityConfig {
         build.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
     
-    @Bean
-    public UserDetailsService users(){
-        UserDetails admin = User.builder().username("juan")
+    /*  @Bean
+    public UserDetailsService users() {
+        UserDetails admin = User.builder()
+                .username("juan")
                 .password("{noop}123")
-                .roles("USER","VENDEDOR","ADMIN")
+                .roles("USER","VENDEDOR", "ADMIN")
                 .build();
-        
-        UserDetails vendedor = User.builder().username("rebeca")
+        UserDetails sales = User.builder()
+                .username("rebeca")
                 .password("{noop}456")
-                .roles("USER","VENDEDOR")
+                .roles("VENDEDOR","USER")
                 .build();
-        
-        UserDetails usuario = User.builder().username("pedro")
+        UserDetails user = User.builder()
+                .username("pedro")
                 .password("{noop}789")
                 .roles("USER")
                 .build();
         
-        return new InMemoryUserDetailsManager(admin, vendedor,usuario);
-    }
+        return new InMemoryUserDetailsManager(user,sales, admin);
+    } */
+    
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
         http
-                .authorizeHttpRequests((requests) -> requests
-                .requestMatchers(
-                        "/",
+                .authorizeHttpRequests((request) -> request
+                .requestMatchers("/",
                         "/index",
                         "/errores/**",
-                        "/carrito/agregar/**",
+                        "/carrito/**",
+                          "/reportes/**",
                         "/webjars/**").permitAll()
                 .requestMatchers(
                         "/articulo/nuevo",
@@ -72,19 +74,22 @@ public class SecurityConfig {
                         "/cliente/nuevo",
                         "/cliente/guardar",
                         "/cliente/modificar/**",
-                        "/cliente/eliminar/**")
-                .hasRole("ADMIN")
+                        "/cliente/eliminar/**",
+                         "/reportes/**"
+                ).hasRole("ADMIN")
                 .requestMatchers(
                         "/articulo/listado",
                         "/categoria/listado",
-                        "/cliente/listado")
-                .hasAnyRole("ADMIN", "VENDEDOR")
+                        "/cliente/listado"
+                ).hasAnyRole("ADMIN", "VENDEDOR")
+                .requestMatchers("/facturar/carrito")
+                .hasRole("USER")
                 )
                 .formLogin((form) -> form
-                .loginPage("/login")
-                .permitAll())
+                .loginPage("/login").permitAll())
                 .logout((logout) -> logout.permitAll())
-                .exceptionHandling().accessDeniedPage("/errores/403");
+                .exceptionHandling()
+                .accessDeniedPage("/errores/403");
         return http.build();
     }
 }
